@@ -1,0 +1,145 @@
+PARSER_BEGIN(Lexpython)
+class Lexpython{
+	static java.util.ArrayList<String> errorL = new java.util.ArrayList<String>();
+   public static void main(String[]args) throws ParseException{
+        Lexpython analizador = new Lexpython(System.in);
+        boolean analizar = true;
+        int alertas=0;
+
+        //Maestra este codigo del ciclo while se comento para que no salieran los pares ordenados
+        do{
+           analizar = analizador.Programa();
+			
+        }while(analizar);
+		
+   	
+    }
+}
+PARSER_END(Lexpython)
+
+TOKEN:{
+
+    //Definicion de las palabras reservadas de nuestro lenguaje
+
+    < TRUE: "true" > {System.out.println("PalReservada(TRUE) -> " + image);}
+
+
+    |< FALSE: "false" > {System.out.println("PalReservada(FALSE) -> " + image);}
+
+    |< IF: "if" > {System.out.println("PalReservad(IF) -> " + image);}
+    |< ELSE: "else:" > {System.out.println("PalReservad(ELSE) -> " + image);}
+    |< WHILE: "while" > {System.out.println("PalReservad(WHILE) -> " + image);}
+    |< FOR: "for" > {System.out.println("PalReservad(FOR) -> " + image);}
+    |< RETURN: "return" > {System.out.println("PalReservad(RETURN) -> " + image);}
+    |< LEER: "input" > {System.out.println("PalReservad(LECTURA) -> " + image);}
+    |< IMPRIMIR: "print" > {System.out.println("PalReservad(IMPRIMIR) -> " + image);}
+}
+
+//Definicion de los signos aceptados por nuestro lenguaje
+TOKEN:{
+    < LI: "{" > {System.out.println("Llave Izquierda -> " + image);}
+    |< LD: "}" > {System.out.println("Llave Derecha -> " + image);}
+    |< PI: "(" > {System.out.println("Parentesis Izquierdo -> " + image);}
+    |< PD: ")" > {System.out.println("Parentesis Derecho -> " + image);}
+    |< PC: ";" > {System.out.println("Punto y Coma -> " + image);}
+    |< DP: ":" > {System.out.println("Dos Puntos -> " + image);}
+    |< C: "," > {System.out.println("Coma -> " + image);}
+    |< A: "&" > {System.out.println("Ampersand -> " + image);}
+}
+
+//Definicion de los operadores aceptados por nuestro lenguaje
+
+TOKEN:{
+    //Aritmeticos
+    < SUMA: "+" > {System.out.println("OperadorAritmetico(SUMA) -> " + image);}
+    |< RESTA: "-" > {System.out.println("OperadorAritmetico(RESTA) -> " + image);}
+    |< MULTI: "*" > {System.out.println("OperadorAritmetico(MULTI) -> " + image);}
+    |< DIV: "/" > {System.out.println("OperadorAritmetico(DIV) -> " + image);}
+    |< MOD: "%" > {System.out.println("OperadorAritmetico(MOD) -> " + image);}
+	|<INCREMENTO: "++" > {System.out.println("OperadorAritmetico(INCREMENTO) " + image);}
+	|<DECREMENTO: "--" > {System.out.println("OperadorAritmetico(DECREMENTO) " + image);}
+
+
+    //Comparacion
+    |< MAYOR: ">" > {System.out.println("OperadorComparativo(MAYOR) -> " + image);}
+    |< MENOR: "<" > {System.out.println("OperadorComparativo(MENOR) -> " + image);}
+    |< IGUALDAD: "==" > {System.out.println("OperadorComparativo(IGUALDAD) -> " + image);}
+    
+    //Asignacion
+    |< IGUAL: "=" > {System.out.println("OperadorAsignacion(IGUAL) -> " + image);}
+    
+    //Logicos
+    |< AND: "&&" > {System.out.println("OperadorLogico(AND) -> " + image);}
+    |< OR: "||" > {System.out.println("OperadorLogico(OR) -> " + image);}
+    |< NOT: "!" > {System.out.println("OperadorLogico(NOT) -> " + image);}
+}
+
+TOKEN:{
+
+// Creacion de los numeros, MAYUSCULAS, minusculas, caracteres aceptados en nuestro lenguaje
+
+    <#letrasMin: ["a"-"z"]>
+    |<#letrasMay: ["A"-"Z"]>
+    |<#numeros: ["0"-"9"]>
+	
+	
+//Definicion de los tokens necesarios para crear nuesta variable en el lenguaje
+
+
+    |<IDENTIFICADOR: (<letrasMin>)(< letrasMin >|< numeros >|"_")*> {System.out.println("VARIABLE -> " + image);}
+	
+
+    |< NUMERO_ENTERO: (< numeros >)+> {System.out.println("INT -> " + image);}
+    |< NUMERO_REAL: (< numeros >)+"."(< numeros >)+ > {System.out.println("FLOAT -> " + image);}
+    
+	|< CADENA: "\""(~["\""])*"\""> {System.out.println("STRING -> " + image);} 
+
+
+    |< PARENL: ("( )") > {System.out.println("ABRE Y CIERRE DE PARENTESIS -> " + image);} 
+	
+	
+}
+
+SKIP:{
+    " "
+    |"\r"
+    |"\t"
+    |"\n"
+}
+
+
+
+TOKEN:{ <ERROR: (<letrasMin>|<letrasMay>|<numeros>|"#"|":"|","|";"|"-"|"_"|"<"|">"|"("|"!"|"¡"|"¿"|"?"|"\""|"$"|"%"|"&"|"/"|"("|")"|"'"|"\\"|"°"|"¬"|"^"|"{"|"`"|"}"|"["|"]"|"{"|"}"|"-"|"*"|"+"|"¨"|"´"|"~"|")"|"|"|"=")+>}
+
+
+//Funcion que se llama en el main para ejecutar con los tokens creados el analizador
+
+boolean Programa(): {}{
+
+	(<TRUE>|<FALSE>
+	|<IF>|<ELSE>|<WHILE>|<FOR>|<RETURN>
+	
+    |<LEER>|<IMPRIMIR>
+    
+	|<LI>|<LD>|<PI>|<PC>|<C>|<A>|<DP>|<PARENL>|<PD>
+	
+    |<SUMA>|<RESTA>|<MULTI>|<DIV>|<MOD>|<INCREMENTO>|<DECREMENTO>
+	
+    |<MAYOR>|<MENOR>|<IGUALDAD>|<IGUAL>|<AND>|<OR>|<NOT>
+    
+	|<IDENTIFICADOR>|<NUMERO_ENTERO>|<NUMERO_REAL>|<CADENA>) {return true;}
+    | <ERROR>{
+	
+		errorL.add("Se ha encontrado el error lexico: \""+ token +"\" en la linea " + token.beginLine + " en las columnas [" + token.beginColumn + " a la "+ token.endColumn+"]. VERIFIQUE SU CODIGO.");
+	
+		return true;
+    }
+    | <EOF>{return false;}
+		
+}
+
+
+
+
+
+	    
